@@ -44,7 +44,13 @@ class QueryProducts extends Command
         } else {
             $this->error('Error querying the API');
         }
+       
+        $this->displayQueries(); 
+    }
 
-        //TODO: display queries
+    protected function displayQueries()
+    {
+        $queries = ProductQuery::all()->toArray();
+        $this->table(['id', 'created_at', 'updated_at', 'nombre', 'resultados'], $queries);
     }
 }
