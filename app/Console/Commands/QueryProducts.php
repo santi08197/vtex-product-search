@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
+use App\Models\ProductQuery;
 
 class QueryProducts extends Command
 {
@@ -28,17 +29,16 @@ class QueryProducts extends Command
     {
         $query = $this->argument('query');
 
-        $response = Http::get("https://newsport.vtexcommercestable.com.br/api/catalog_system/pub/products/search/$query", [
-            /* '_from' => 1,
-            '_to' => 3, */
-        ]);
+        $response = Http::get("https://newsport.vtexcommercestable.com.br/api/catalog_system/pub/products/search/$query");
       
         if ($response->successful()) {
             $products = $response->json();
             $resultCount = count($products);
-            $this->info($resultCount);
             
-            //TODO: create model
+            ProductQuery::create([
+                'nombre' => $query,
+                'resultados' => $resultCount,
+            ]);
 
             $this->info("Query saved: {$query} - {$resultCount} results");
         } else {
